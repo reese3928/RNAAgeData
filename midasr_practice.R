@@ -391,21 +391,90 @@ p3<-p3+ggtitle("Scale-Location")+theme_bw()+theme(plot.title = element_text(hjus
 p3
 
 
-
+library(ggplot2)
 df = data.frame(LGD = runif(60), label = rep(c("historical", "predicted"), each=30), year = rep(1987:2016,2))
 p = ggplot(data=df, aes(x=year, y=LGD, group=label)) + geom_line(aes(color=label))+
-    xlim(c(1987, 2022))
+    xlim(c(1987, 2022))   #+scale_color_manual(values=c("maroon2", "cyan3"))
 dfb = data.frame(year = 2017:2021, LGD = runif(5), label = rep("base", 5))
 dfm = data.frame(year = 2017:2021, LGD = runif(5), label = rep("adverse", 5))
 dfs = data.frame(year = 2017:2021, LGD = runif(5), label = rep("severe", 5))
-p = p + geom_line(data = dfb, aes(x = year, y = LGD, group = label)) + geom_point(aes(color=label))
-p = p + geom_line(data = dfm, aes(x = year, y = LGD, group = label)) + geom_point(aes(color=label))
-p = p + geom_line(data = dfs, aes(x = year, y = LGD, group = label)) + geom_point(aes(color=label))
+p = p + geom_line(data = dfb, aes(x = year, y = LGD), color = "red")
+p = p + geom_line(data = dfm, aes(x = year, y = LGD), color = "blue")
+p = p + geom_line(data = dfs, aes(x = year, y = LGD), color = "yellow")
+p = p + theme_bw()
+p = p + scale_color_manual(values = c("maroon2", "cyan3", "red", "blue", "yellow"),
+                           labels = c("true DD", "predicted DD", "base", "adverse", "severe"),
+                           guide = guide_legend(override.aes = list(alpha = 1, size = 3)))
 p
 
 
 
 
+df = data.frame(LGD = runif(60), label = rep(c("historical", "predicted"), each=30), year = rep(1987:2016,2))
+df1 = data.frame(LGD = runif(30), year = 1987:2016)
+p = ggplot()+xlim(c(1987, 2022))
+p = p + geom_line(data = df1, aes(x = year, y = LGD), color = "maroon2")
+df2 = data.frame(LGD = runif(30), year = 1987:2016)
+p = p + geom_line(data = df2, aes(x = year, y = LGD), color = "cyan3")
+dfb = data.frame(year = 2017:2021, LGD = runif(5), label = rep("base", 5))
+dfm = data.frame(year = 2017:2021, LGD = runif(5), label = rep("adverse", 5))
+dfs = data.frame(year = 2017:2021, LGD = runif(5), label = rep("severe", 5))
+p = p + geom_line(data = dfb, aes(x = year, y = LGD), color = "red")
+p = p + geom_line(data = dfm, aes(x = year, y = LGD), color = "blue")
+p = p + geom_line(data = dfs, aes(x = year, y = LGD), color = "yellow")
+p = p + theme_bw()
+p = p + scale_color_manual(values = c("maroon2", "cyan3", "red", "blue", "yellow"),
+                           labels = c("true DD", "predicted DD", "base", "adverse", "severe"))
+p
+
+
+
+
+historical = runif(30)
+pred_hist = runif(30)
+pred_base = runif(5)
+pred_adverse = runif(5)
+pred_severe = runif(5)
+
+df = data.frame(LGD = c(historical, pred_hist, pred_base, pred_adverse, pred_severe), 
+                label = c(rep("historical", 30), rep("predicted", 30), rep("base", 5), rep("adverse", 5), rep("severe", 5)),
+                year = c(1987:2016,1987:2016,2017:2021,2017:2021,2017:2021),
+                type = c(rep("dashed",30), rep("solid",45)))
+p = ggplot(data=df, aes(x=year, y=LGD, group=label)) + geom_line(aes(color=label, linetype = type))+
+    xlim(c(1987, 2022))+scale_colour_discrete("guide") +
+    scale_color_manual(name = "guide", values=c("maroon2", "cyan3", "red", "blue", "yellow"))+
+    scale_linetype_manual(name="guide",values= c('dashed', 'solid', 'solid', "solid","solid"))+
+    theme_bw()+theme(legend.title=element_blank())
+p
+
+
+#########################################################################################################
+historical = runif(30)
+pred_hist = runif(30)
+pred_base = runif(5)
+pred_adverse = runif(5)
+pred_severe = runif(5)
+
+df = data.frame(LGD = c(historical, pred_hist, pred_base, pred_adverse, pred_severe), 
+                label = c(rep("historical", 30), rep("predicted", 30), rep("base", 5), rep("adverse", 5), rep("severe", 5)),
+                year = c(1987:2016,1987:2016,2017:2021,2017:2021,2017:2021))
+df$label = factor(df$label, levels=c("historical","predicted", "base", "adverse","severe"))
+p = ggplot(data=df, aes(x=year, y=LGD, group=label)) + geom_line(aes(linetype = label, col = label))+
+    xlim(c(1987, 2022))+
+    scale_color_manual(name = "", values=c("maroon2", "cyan3", "red", "blue", "yellow"))+
+    scale_linetype_manual(name="",values= c("solid", "dashed", "solid", "solid","solid"))+
+    theme_bw()#+theme(legend.title=element_blank())
+p
+##############################################################################################################
+
+
+
+scale_linetype_manual(values=c("twodash", "dotted"))+
+
+
+scale_color_manual(values = c("darkgrey", "red", "blue"),
+                   labels = c("not sign", "neg", "pos"),
+                   guide = guide_legend(override.aes = list(alpha = 1, size = 3)))
 
 
 
